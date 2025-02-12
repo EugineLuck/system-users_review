@@ -1,0 +1,120 @@
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.card {
+    width: 45%;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid #7B0605;
+    margin: 10px; 
+    height: 50%;
+}
+.card h3 {
+    text-align: center;
+    color: #7B0605;
+}
+.list {
+    height: 300px;
+    border: 2px dashed #7B0605;
+    padding: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    overflow-y: auto !important;
+  
+}
+
+h3 {
+    text-align: center;
+    color: #7B0605;
+}
+
+#uploadForm {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: auto;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;  /* Vertically center the items */
+    justify-content: flex-start; /* Align to the start of the container */
+    margin-bottom: 20px;
+}
+
+.form-row label {
+    font-weight: bold;
+    color: #333;
+    margin-right: 15px; /* Add space between label and input */
+}
+
+/* Input and Select Styling */
+.form-select-custom, #fileInput {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 2px solid #7B0605;
+    width: 45%; /* Adjust width so they fit in one line */
+    margin-right: 10px; /* Space between the select and file input */
+}
+
+#fileInput {
+    display: inline-block;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #7B0605;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.file-label:hover {
+    background: #5A0403;
+}
+
+button {
+    width: 100%;
+    background: #7B0605;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+button:hover {
+    background: white;
+    color: #7B0605;
+    border: 2px solid #7B0605;
+}
+
+
+.form-row label {
+    font-weight: bold;
+    color: #333;
+    margin-right: 15px; /* Add space between label and input */
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+#sankeyChart {
+    width: auto !important; /* Ensure it takes the full width of its container */
+    height: 300px; /* Fixed height */
+    overflow-y: auto !important; /* Allow vertical scrolling */
+    box-sizing: border-box; /* Include padding and border in the element's total width */
+}

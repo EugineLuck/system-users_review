@@ -1,0 +1,187 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    width: 100%;
+    max-width: 2000px;
+    margin: auto;
+    padding: 20px;
+    flex: 20;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+@media (max-width: 767.98px) {
+    .container {
+        width: 95%;
+        padding: 10px;
+    }
+    h1 {
+        font-size: 22px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .container {
+        width: 85%;
+        padding: 15px;
+    }
+    h1 {
+        font-size: 28px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        width: 80%;
+        padding: 20px;
+    }
+    h1 {
+        font-size: 32px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .container {
+        width: 75%;
+        max-width: 1600px;
+    }
+    h1 {
+        font-size: 36px;
+    }
+}
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #7B0605 !important;
+    color: white;
+    width: 200px;
+    height: 100vh;
+    transition: all 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+#sidebar.collapsed {
+    width: 80px;
+}
+
+#sidebar.collapsed .sidebar-text {
+    display: none;
+}
+
+#sidebar.collapsed #companyLogo {
+    width: 60px;
+    max-height: 30px;
+}
+
+#sidebar .nav-link {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+#sidebar .nav-link i {
+    width: 20px;
+    text-align: center;
+}
+
+#sidebar .nav-link:hover {
+    background-color: #495057;
+    border-radius: 5px;
+}
+
+#toggleSidebar {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#companyLogo {
+    width: 220px;
+    max-height: 90px;
+    height: 40px;
+    transition: width 0.3s, max-height 0.3s;
+}
+
+#sidebar.collapsed #companyLogo {
+    width: 60px;
+    max-height: 30px;
+}
+
+.navbar {
+    background-color: #7B0605;
+    color: white;
+    transition: margin-left 0.3s ease-in-out, padding-left 0.3s ease-in-out;
+    z-index: 100;
+    margin-left: 200px;
+}
+
+.navbar .navbar-brand {
+    color: white;
+    font-size: 1.5rem;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.navbar .nav-link {
+    color: white;
+    font-size: 1rem;
+}
+
+.navbar .nav-link:hover {
+    color: #ffcc00;
+}
+
+#sidebar.collapsed + .flex-grow-1 .navbar {
+    margin-left: 80px;
+    padding-left: 80px;
+}
+
+#sidebar:not(.collapsed) + .flex-grow-1 .navbar {
+    margin-left: 200px;
+    padding-left: 200px;
+}
+
+#sidebar.collapsed + .flex-grow-1 {
+    margin-left: 80px;
+}
+
+#sidebar:not(.collapsed) + .flex-grow-1 {
+    margin-left: 200px;
+}
+
+.flex-grow-1 {
+    background-size: cover;
+    height: 100vh;
+    color: rgb(5, 5, 5);
+}
+
+.centered-gif {
+    background-size: cover;
+    height: 100vh;
+    color: rgb(5, 5, 5);
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.centered-gif img {
+    border-radius: 40px;
+}

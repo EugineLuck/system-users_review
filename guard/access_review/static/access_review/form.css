@@ -1,0 +1,59 @@
+/* General Form Styling */
+#jdbcForm {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* Form Row Styling */
+.form-row {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: #66afe9;
+    outline: none;
+    box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+}
+
+/* Submit Button Styling */
+#submitButton {
+    width: 100%;
+    padding: 10px;
+    background-color:  #7B0605;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#submitButton:hover {
+    background-color: #218838;
+}
+
+h3 {
+    text-align: center;
+    color: #7B0605;
+}

@@ -1,0 +1,79 @@
+{% extends "access_review/index.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'access_review/form.css' %}">
+
+<h3>JDBC CONNECTIVITY</h3>
+<div id="loadingSpinner" class="text-center" style="display: none;">
+    <div class="spinner-border text-danger" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<!-- JDBC Connection Form -->
+<form id="jdbcForm" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-row">
+        <!-- Select Application -->
+        <label for="applicationSelect" class="form-label">Select Application</label>
+        <select class="form-select form-select-custom" id="applicationSelect" required>
+            <option value="">---Select---</option>
+            {% for application in applications %}
+                <option value="{{ application.id }}">{{ application.application_name|upper }}</option>
+            {% empty %}
+                <option value="">No applications available</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+
+    <div class="form-row">
+        <!-- Username -->
+        <label for="username" class="form-label">Username</label>
+        <input type="text" id="username" name="username" class="form-input" placeholder="Enter username" required>
+    </div>
+
+    <div class="form-row">
+        <!-- Password -->
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" name="password" class="form-input" placeholder="Enter password" required>
+    </div>
+
+    <div class="form-row">
+        <!-- Host -->
+        <label for="host" class="form-label">Host</label>
+        <input type="text" id="host" name="host" class="form-input" placeholder="Enter host" required>
+    </div>
+
+    <div class="form-row">
+        <!-- Port -->
+        <label for="port" class="form-label">Port</label>
+        <input type="number" id="port" name="port" class="form-input" placeholder="Enter port" required>
+    </div>
+
+    <div class="form-row">
+        <!-- Service Name -->
+        <label for="serviceName" class="form-label">Service Name</label>
+        <input type="text" id="service_name" name="service_name" class="form-input" placeholder="Enter service name" required>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" id="submitButton">Submit</button>
+</form>
+
+<!-- Define JavaScript variables -->
+<script type="text/javascript">
+    const savejdbc = "{% url 'savejdbc' %}";
+    
+</script>
+
+<!-- Include jQuery and jQuery UI in the correct order -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<!-- Include Google Charts loader -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script src="{% static 'access_review/js/jdbc.js' %}"></script>
+{% endblock content %}
