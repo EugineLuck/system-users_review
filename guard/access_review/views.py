@@ -13,9 +13,12 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.core.cache import cache
+from django.db.models import Q
 
 def index(request):
     return render(request, 'access_review/index.html')
+def sandbox(request):
+    return render(request, 'access_review/sandbox.html')
 
 def jdbc_connections(request):
     try:
@@ -180,6 +183,103 @@ def home(request):
             'user_count': 0
         })
 
+def finacle(request):
+    try:
+   
+        applications_list = list(applications.objects.values_list('application_name', flat=True))
+        sys_count = len(applications_list)
+
+        subsidiaries = list(
+            staff.objects.order_by('subsidiary').values_list('subsidiary', flat=True).distinct()
+        )
+
+        users = list(system_users.objects.filter(application="Finacle").values_list(
+            'application', 'pf_no', 'user_id', 'sam_name', 'email', 
+            'system_status', 'creation_date', 'last_login', 'system_role', 'subsidiary'
+        ))
+        
+        user_count = len(users)
+
+        paginator = Paginator(users, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'access_review/finacle.html', {
+            'applications': applications_list,
+            'users': page_obj,
+            'user_count': user_count,
+            'sys_count': sys_count,
+            'page_obj': page_obj,
+            'subsidiaries': subsidiaries
+        })
+    
+    except ObjectDoesNotExist as e:
+        print(f"An error occurred: {e}")
+        return render(request, 'access_review/finacle.html', {
+            'applications': None,
+            'users': None,
+            'user_count': 0,
+            'sys_count': 0
+        })
+    
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return render(request, 'access_review/finacle.html', {
+            'applications': None,
+            'users': None,
+            'user_count': 0
+        })
+
+
+
+def active_directory(request):
+    try:
+   
+        applications_list = list(applications.objects.values_list('application_name', flat=True))
+        sys_count = len(applications_list)
+
+        subsidiaries = list(
+            staff.objects.order_by('subsidiary').values_list('subsidiary', flat=True).distinct()
+        )
+        users = list(ad.objects.filter(application="AD").values_list(
+            'application', 'pf_no','sam_name', 'email', 
+            'system_status', 'creation_date', 'last_login', 'organization_unit', 'subsidiary'
+        ))
+        
+        user_count = len(users)
+
+        paginator = Paginator(users, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'access_review/active_directory.html', {
+            'applications': applications_list,
+            'users': page_obj,
+            'user_count': user_count,
+            'sys_count': sys_count,
+            'page_obj': page_obj,
+            'subsidiaries': subsidiaries
+        })
+    
+    except ObjectDoesNotExist as e:
+        print(f"An error occurred: {e}")
+        return render(request, 'access_review/active_directory.html', {
+            'applications': None,
+            'users': None,
+            'user_count': 0,
+            'sys_count': 0
+        })
+    
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return render(request, 'access_review/active_directory.html', {
+            'applications': None,
+            'users': None,
+            'user_count': 0
+        })
+
+
+
 def employees(request):
     try:
         applications_list = None
@@ -241,6 +341,70 @@ def employees(request):
             'users': None,
             'user_count': 0
         })
+
+def insights(request):
+    try:
+        applications_list = list(applications.objects.values_list('application_name', flat=True))
+        sys_count = len(applications_list)
+        subsidiaries = list(
+            staff.objects.order_by('subsidiary').values_list('subsidiary', flat=True).distinct()
+        )
+
+        category = request.GET.get("category", "violations").lower()
+        print(f"📌 Category requested: {category}")
+
+        # Define filters
+        category_filters = {
+            "violations": Q(system_violations="Yes"),
+            "idle": Q(dormancy="No Last Login"),
+            "dormant": Q(dormancy="Dormant"),
+            "mismatch": Q(unidentified="mismatch"),
+            "duplicates": ~Q(duplicates="false"),  # Not equal to 'false'
+            "delayed": Q(system_violations="Delayed")
+        }
+
+        # Apply filter based on selected category
+        filter_condition = category_filters.get(category, Q(system_violations="Yes"))
+
+        # Fetch users based on the filter
+        users = list(system_users.objects.filter(filter_condition).values(
+            'application', 'pf_no', 'user_id', 'sam_name', 'email', 'system_status', 
+            'creation_date', 'last_login', 'system_role', 'subsidiary'
+        ))
+
+        user_count = len(users)
+        print(f"✅ Users fetched: {user_count}")
+
+        # Pagination
+        paginator = Paginator(users, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'access_review/insights.html', {
+            'applications': applications_list,
+            'users': page_obj,
+            'user_count': user_count,
+            'sys_count': sys_count,
+            'page_obj': page_obj,
+            'subsidiaries': subsidiaries
+        })
+
+    except ObjectDoesNotExist as e:
+        print(f"❌ ObjectDoesNotExist Error: {e}")
+        return render(request, 'access_review/insights.html', {
+            'applications': None,
+            'users': None,
+            'user_count': 0,
+            'sys_count': 0
+        })
+    except Exception as e:
+        print(f"⚠️ Unexpected Error: {e}")
+        return render(request, 'access_review/insights.html', {
+            'applications': None,
+            'users': None,
+            'user_count': 0
+        })
+
 
 
 def login_to_ad(username, password):

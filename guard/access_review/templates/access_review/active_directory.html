@@ -101,7 +101,7 @@
     <!-- User Access Review Table -->
     <div class="table-container">
         <div class="container-fluid">
-            <h2 class="text-center mb-4">SYSTEM  USERS</h2>
+            <h2 class="text-center mb-4">ACTIVE DIRECTORY SYSTEM  USERS</h2>
             <div class="table-container">
                 <table id="userTable" class="table table-striped table-bordered">
                     <thead>
@@ -109,10 +109,11 @@
                             <th>No.<div class="resizer"></th>
                             <th>Application<div class="resizer"></th>
                             <th>PF No<div class="resizer"></th>
-                            <th>User ID<div class="resizer"></th>
-                            <th>SAM Name</th>
-                            
-                            <th>Email<div class="resizer"></th>
+                               
+                            <th>Sam Name<div class="resizer"></th>
+                                <th>Email<div class="resizer"></th>
+                            <th>Organization<div class="resizer"></th>
+                          
                             <th>System Status<div class="resizer"></th>
                             <th>Last Login<div class="resizer"></th>
                             <th>Subsidiary<div class="resizer"></th>
@@ -127,10 +128,11 @@
                                 <td>{{ user.1 }}</td>
                                 <td>{{ user.2 }}</td>
                                 <td>{{ user.3 }}</td>
-                                <td>{{ user.4 }}</td>
-                                <td>{{ user.5 }}</td>
                                 <td>{{ user.7 }}</td>
-                                <td>{{ user.9}}</td>
+                                <td>{{ user.4 }}</td>
+                              
+                                <td>{{ user.6 }}</td>
+                                <td>{{ user.8}}</td>
                             </tr>
                         {% empty %}
                             <tr>

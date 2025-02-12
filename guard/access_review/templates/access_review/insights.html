@@ -2,14 +2,68 @@
 {% load static %}
 
 {% block content %}
+ 
   
-<div class="container-fluid">
+    <div class="bread-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <button class="btn btn-link text-dark text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#insightsTabsContainer">
+                        <i class="fas fa-bars"></i> Access Insights</button>
+                    </button>
+                </li>
+            </ol>
+        </nav>
+  
+             <div class="collapse" id="insightsTabsContainer">
+            <ul class="nav nav-pills justify-content-start mb-4">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'violations' or not request.GET.category %}active{% endif %}" 
+                       href="{% url 'insights' %}?category=violations">
+                       <i class="fas fa-exclamation-triangle"></i>System Violations
+                     
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'idle' %}active{% endif %}" 
+                       href="{% url 'insights' %}?category=idle">
+                       <i class="fas fa-user-clock"></i>Idle Accounts
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'dormant' %}active{% endif %}" 
+                       href="{% url 'insights' %}?category=dormant">
+                        <i class="fas fa-user-slash"></i> Dormant Accounts
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'mismatch' %}active{% endif %}" 
+                       href="{% url 'insights' %}?category=mismatch">
+                       <i class="fas fa-exchange-alt"></i> Data Mismatch Accounts
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'duplicates' %}active{% endif %}" 
+                       href="{% url 'insights' %}?category=duplicates">
+                       <i class="fas fa-clone"></i> Duplicate Accounts
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'delayed' %}active{% endif %}" 
+                       href="{% url 'insights' %}?category=delayed">
+                        <i class="fas fa-clock"></i> Delayed Deactivations
+                    </a>
+                </li>
+            </ul>
+            
+   <hr>
+        </div>
+
     {% if error %}
         <div class="alert {% if error == 'No AD credentials found.' %}status-warning{% elif error == 'Failed to connect' %}status-error{% else %}status-success{% endif %}">
             {{ error }}
         </div>
     {% endif %}
-
     <div class="row mt-2 mb-2 justify-content-between"> 
         <!-- Apps Count Card -->
         <div class="col-md-2">
@@ -93,6 +147,8 @@
         </div>
     </div>
 </div>
+
+   
     <div id="loadingSpinner" class="text-center" style="display: none;">
         <div class="spinner-border text-danger" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -101,36 +157,36 @@
     <!-- User Access Review Table -->
     <div class="table-container">
         <div class="container-fluid">
-            <h2 class="text-center mb-4">SYSTEM  USERS</h2>
+            <h2 class="text-center mb-4">Access Insights </h2>
             <div class="table-container">
                 <table id="userTable" class="table table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>No.<div class="resizer"></th>
-                            <th>Application<div class="resizer"></th>
-                            <th>PF No<div class="resizer"></th>
-                            <th>User ID<div class="resizer"></th>
-                            <th>SAM Name</th>
+                            <th>No.<div class="resizer"></div></th>
+                            <th>Application<div class="resizer"></div></th>
+                            <th>PF No<div class="resizer"></div></th>
+                            <th>User ID<div class="resizer"></div></th>
+                            <th>Sam Name<div class="resizer"></div></th>
                             
-                            <th>Email<div class="resizer"></th>
-                            <th>System Status<div class="resizer"></th>
-                            <th>Last Login<div class="resizer"></th>
-                            <th>Subsidiary<div class="resizer"></th>
+                            <th>Email<div class="resizer"></div></th>
+                            <th>System Status<div class="resizer"></div></th>
+                            <th>Last Login<div class="resizer"></div></th>
+                            <th>Subsidiary<div class="resizer"></div></th>
                            
                         </tr>
                     </thead>
                     <tbody class="scrollable-tbody">
-                        {% for user in page_obj %}
-                            <tr>
+                        {% for user in users %}
+                            <tr>   
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ user.0 }}</td>
-                                <td>{{ user.1 }}</td>
-                                <td>{{ user.2 }}</td>
-                                <td>{{ user.3 }}</td>
-                                <td>{{ user.4 }}</td>
-                                <td>{{ user.5 }}</td>
-                                <td>{{ user.7 }}</td>
-                                <td>{{ user.9}}</td>
+                                <td>{{ user.application }}</td>  <!-- Ensure correct field names -->
+                                <td>{{ user.pf_no }}</td>
+                                <td>{{ user.user_id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.system_status }}</td>
+                                <td>{{ user.last_login }}</td>
+                                <td>{{ user.subsidiary }}</td>
                             </tr>
                         {% empty %}
                             <tr>
@@ -138,6 +194,7 @@
                             </tr>
                         {% endfor %}
                     </tbody>
+                    
                 </table>
             </div>
 
@@ -196,6 +253,6 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="{% static 'access_review/js/home.js' %}"></script> 
+    <script src="{% static 'access_review/js/insights.js' %}"></script> 
    
 {% endblock %}

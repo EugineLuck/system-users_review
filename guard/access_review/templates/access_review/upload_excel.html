@@ -5,8 +5,7 @@
 <link rel="stylesheet" href="{% static 'access_review/upload_styles.css' %}">
 
 <h3>Drag and Drop Mapping</h3>
-
-<!-- File Upload Form -->
+<div class="bread-container">
 <form id="uploadForm" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-row">
@@ -18,71 +17,82 @@
             <option value="staff">Staff</option>
         </select>
 
-        <!-- Custom File Input -->
         <label for="fileInput"></label>
         <input type="file" name="file" id="fileInput" required>
     </div>
-
     <button type="submit" id="uploadButton">Upload</button>
 </form>
+</div>
 
 <div id="loadingSpinner" class="text-center" style="display: none;">
     <div class="spinner-border text-danger" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
 </div>
-
-<!-- Drag and Drop Lists -->
-<div class="container">
-    <div class="card">
-        <h3 id="modelFieldsHeader">Model Fields</h3>
-        <div class="list" id="modelFieldsList">
-            <table id="modelFieldsTable">
-                <thead>
-                    <tr>
-                        <th>NO.</th>
-                        <th>Field</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+<div class="table-container">
+    <div class="container-fluid">
+<div class="row mt-2 mb-2 justify-content-between"> 
+    <!-- Apps Count Card -->
+    <div class="col-md-4">
+        <div class="mb-2">
+            <div class="card">
+            <h3 id="modelFieldsHeader">Model Fields</h3>
+            <div class="list" id="modelFieldsList">
+                <table id="modelFieldsTable">
+                    <thead>
+                        <tr>
+                            <th>NO.</th>
+                            <th>Field</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>  </div>
     </div>
-    <div class="card">
-        <h3 id="excel_name">Excel Headers</h3>
-        <div class="list" id="excelHeadersList">
-            <table id="excelHeadersTable">
-                <thead>
-                    <tr>
-                        <th>NO.</th>
-                        <th>Header</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="col-md-4">
+            <div class="mb-2">
+                <div class="card">
+            <h3 id="excel_name">Excel Headers</h3>
+            <div class="list" id="excelHeadersList">
+                <table id="excelHeadersTable">
+                    <thead>
+                        <tr>
+                            <th>NO.</th>
+                            <th>Header</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
-    </div>
-    <div class="card">
-        <h3>Visuals</h3>
-        <div id="sankeyChart" ></div>
     </div>
 </div>
+        <div class="col-md-4">
+            <div class="mb-2">
+                <div class="card">
+            <h3>Visuals</h3>
+            <div id="sankeyChart"></div>
+        </div>
+    </div>
+</div>
+<div class="button-container">
+    <button id="saveMappings">Save Mappings</button>
+</div>
 
-<button id="saveMappings">Save Mappings</button>
+</div>
 
-<!-- Define JavaScript variables -->
+</div></div></div>
+
+
 <script type="text/javascript">
     const saveMappingsUrl = "{% url 'save_mappings' %}";
     const getModelFieldsUrl = "{% url 'get_model_fields' %}";
     const uploadExcelUrl = "{% url 'upload_excel' %}";
 </script>
 
-<!-- Include jQuery and jQuery UI in the correct order -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
-<!-- Include Google Charts loader -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<!-- Your custom Sankey chart script -->
 <script src="{% static 'access_review/js/sankey_chart_v2.js' %}"></script>
 {% endblock content %}
