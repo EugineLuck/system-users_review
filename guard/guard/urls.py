@@ -29,6 +29,7 @@ urlpatterns = [
     path('sandbox/', views.sandbox, name='sandbox'),
     path('employees/', views.employees, name='employees'),
     path('insights/', views.insights, name='insights'),
+    path('line_manager/', views.line_manager, name='line_manager'),
     path('finacle/', views.finacle, name='finacle'),
     path('active_directory/', views.active_directory, name='active_directory'),
     path("upload_excel/", views.upload_excel, name='upload_excel'),
