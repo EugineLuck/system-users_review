@@ -31,6 +31,8 @@ urlpatterns = [
     path('insights/', views.insights, name='insights'),
     path('line_manager/', views.line_manager, name='line_manager'),
     path('finacle/', views.finacle, name='finacle'),
+    path('role_matrix/', views.role_matrix, name='role_matrix'),
+    path('user_review/', views.user_review, name='user_review'),
     path('active_directory/', views.active_directory, name='active_directory'),
     path("upload_excel/", views.upload_excel, name='upload_excel'),
     path('save_mappings/', views.save_mappings, name='save_mappings'),
@@ -38,6 +40,7 @@ urlpatterns = [
     path('get_model_fields/', views.get_model_fields, name='get_model_fields'),
     path('jdbc_connections/', views.jdbc_connections, name='jdbc_connections'),
     path('filter-users/', views.filter_users, name='filter_users'),
+    
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

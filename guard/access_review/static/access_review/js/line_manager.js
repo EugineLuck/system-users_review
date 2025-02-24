@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const paginationLinks = document.querySelectorAll('.page-link');
-    
 
     // Show the loading spinner
     function showSpinner() {
@@ -12,39 +11,80 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('loadingSpinner').style.display = 'none';
     }
 
-    paginationLinks.forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const url = this.getAttribute('href');
+    function attachPaginationEvents() {
+        document.querySelectorAll('.page-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
 
-            // Show loading spinner
-            showSpinner();
+                // Show loading spinner
+                showSpinner();
 
-            // Fetch the new page content
-            fetch(url)
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const newDocument = parser.parseFromString(html, 'text/html');
-                    const newTableBody = newDocument.querySelector('.scrollable-tbody');
-                    const newPagination = newDocument.querySelector('.pagination');
+                // Fetch the new page content
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const newDocument = parser.parseFromString(html, 'text/html');
+                        const newTableBody = newDocument.querySelector('.scrollable-tbody');
+                        const newPagination = newDocument.querySelector('.pagination');
 
-                    // Update the table and pagination
-                    document.querySelector('.scrollable-tbody').innerHTML = newTableBody.innerHTML;
-                    document.querySelector('.pagination').innerHTML = newPagination.innerHTML;
+                        // Update the table and pagination
+                        document.querySelector('.scrollable-tbody').innerHTML = newTableBody.innerHTML;
+                        document.querySelector('.pagination').innerHTML = newPagination.innerHTML;
 
-                    // Hide loading spinner
-                    hideSpinner();
-                })
-                .catch(error => {
-                    console.error('Error loading page:', error);
-                    hideSpinner();
-                });
+                        // Hide loading spinner
+                        hideSpinner();
+
+                        // Reattach event listeners to new pagination links
+                        attachPaginationEvents();
+                    })
+                    .catch(error => {
+                        console.error('Error loading page:', error);
+                        hideSpinner();
+                    });
+            });
         });
-    });
+    }
+
+    // Initial call to attach events
+    attachPaginationEvents();
 });
 
+// jQuery functions
 $(document).ready(function() {
+    // When the review button is clicked
+    $('.open-review-modal').on('click', function() {
+        var userId = $(this).data('user-id');
+
+        // Show loading spinner
+        $('#loadingSpinner').show();
+
+        // Send an AJAX request to get user data
+        $.ajax({
+            url: '/user_review/' + userId,
+            method: 'GET',
+            success: function(data) {
+                // Update the modal content with the data
+                $('#modalContent').html(`
+                    <p><strong>Branch:</strong> ${data.branch}</p>
+                    <p><strong>Department:</strong> ${data.department}</p>
+                    <p><strong>Supervisor:</strong> ${data.supervisor}</p>
+                    <p><strong>Email:</strong> ${data.email}</p>
+                    <p><strong>Full Name:</strong> ${data.full_name}</p>
+                    <!-- Add more details as necessary -->
+                `);
+
+                // Hide loading spinner
+                $('#loadingSpinner').hide();
+            },
+            error: function() {
+                alert('Error loading user data.');
+                $('#loadingSpinner').hide();
+            }
+        });
+    });
+
     // Initialize Select2
     $('#applicationSelect').select2({
         placeholder: 'Search and select an Application',
@@ -63,7 +103,7 @@ $(document).ready(function() {
     });
 
     // Set the current year in footer
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    $('#currentYear').text(new Date().getFullYear());
 
     // Update user count dynamically
     function updateUserCount() {

@@ -2,14 +2,61 @@
 {% load static %}
 
 {% block content %}
+ 
   
-<div class="container-fluid">
+    <div class="bread-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <button class="btn btn-link text-dark text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#employeeTabsContainer">
+                        <i class="fas fa-bars"></i> Employee Categories
+                    </button>
+                </li>
+            </ol>
+        </nav>
+  
+             <div class="collapse" id="employeeTabsContainer">
+            <ul class="nav nav-pills justify-content-start mb-4">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'active' or not request.GET.category %}active{% endif %}" 
+                       href="{% url 'employees' %}?category=active">
+                        <i class="fas fa-user-tie"></i> Active Emp
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'ex_employees' %}active{% endif %}" 
+                       href="{% url 'employees' %}?category=ex_employees">
+                        <i class="fas fa-user-times"></i> Ex Employees
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'suspended' %}active{% endif %}" 
+                       href="{% url 'employees' %}?category=suspended">
+                        <i class="fas fa-user-slash"></i> Suspended
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'contingent' %}active{% endif %}" 
+                       href="{% url 'employees' %}?category=contingent">
+                        <i class="fas fa-user-clock"></i> Contingent Workers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.GET.category == 'service_accounts' %}active{% endif %}" 
+                       href="{% url 'employees' %}?category=service_accounts">
+                        <i class="fas fa-cogs"></i> Service Account
+                    </a>
+                </li>
+            </ul>
+            
+   <hr>
+        </div>
+
     {% if error %}
         <div class="alert {% if error == 'No AD credentials found.' %}status-warning{% elif error == 'Failed to connect' %}status-error{% else %}status-success{% endif %}">
             {{ error }}
         </div>
     {% endif %}
-
     <div class="row mt-2 mb-2 justify-content-between"> 
         <!-- Apps Count Card -->
         <div class="col-md-2">
@@ -93,6 +140,8 @@
         </div>
     </div>
 </div>
+
+   
     <div id="loadingSpinner" class="text-center" style="display: none;">
         <div class="spinner-border text-danger" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -101,41 +150,34 @@
     <!-- User Access Review Table -->
     <div class="table-container">
         <div class="container-fluid">
-            <h2 class="text-center mb-4">LINE MANAGER REVIEWS</h2>
+            <h2 class="text-center mb-4">All Active Staff</h2>
             <div class="table-container">
                 <table id="userTable" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>No.<div class="resizer"></th>
-                            <th>Branch<div class="resizer"></th>
-                            <th>Department<div class="resizer"></th>
-                            <th>Supervisor<div class="resizer"></th>
-                            <th>Pf No</th>
-                            
+                            <th>PF No<div class="resizer"></th>
+                            <th>Full Name<div class="resizer"></th>
                             <th>Email<div class="resizer"></th>
-                            <th>Name<div class="resizer"></th>
-                            <th> Review<div class="resizer"></th>
-                         
+                          
+                            <th>Department<div class="resizer"></th>
+                            <th> Title<div class="resizer"></th>
+                            <th> Branch<div class="resizer"></th>
+                            <th>End Date<div class="resizer"></th>
                            
                         </tr>
                     </thead>
                     <tbody class="scrollable-tbody">
-                        {% for user in page_obj %}
-                            <tr>
+                        {% for user in users %}
+                            <tr>   
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ user.branch }}</td>
-                                <td>{{ user.department }}</td>
-                                <td>{{ user.supervisor }}</td>
-                                <td>{{ user.pf_no }}</td>
-                                <td>{{ user.email }}</td>
+                                <td>{{ user.pf_no }}</td>  <!-- Ensure correct field names -->
                                 <td>{{ user.full_name }}</td>
-                                <td>
-                                    <button class="btn btn-primary open-review-modal" data-user-id="{{ user.id }}" data-bs-toggle="modal" data-bs-target="#reviewModal">
-                                        Review
-                                    </button>
-                                </td>
-                                
-                                
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.department }}</td>
+                                <td>{{ user.title }}</td>
+                                <td>{{ user.branch }}</td>
+                                <td>{{ user.actual_end_date }}</td>
                             </tr>
                         {% empty %}
                             <tr>
@@ -143,10 +185,9 @@
                             </tr>
                         {% endfor %}
                     </tbody>
+                    
                 </table>
             </div>
-<!-- Modal -->
-
 
             <!-- Pagination -->
             <div class="d-flex justify-content-center mt-4">
@@ -195,22 +236,7 @@
             
         </div>
     </div>
-<!-- Modal -->
-<div class="modal fade modal-fullscreen" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reviewModalLabel">User Review</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="modalContent">
-                    <!-- Dynamic content will be inserted here -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
     <!-- Footer -->
     <footer class="text-center mt-5 py-4 bg-light">
@@ -218,6 +244,6 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="{% static 'access_review/js/home.js' %}"></script> 
+    <script src="{% static 'access_review/js/employees.js' %}"></script> 
    
 {% endblock %}
