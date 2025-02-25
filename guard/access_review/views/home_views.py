@@ -2,7 +2,7 @@ from django.shortcuts import render
 import pandas as pd
 from ldap3 import Server, Connection, ALL, SUBTREE
 from datetime import datetime
-from .models import login_credentials, ad, applications, column_mapping, system_users, staff
+from ..models import login_credentials, ad, applications, column_mapping, system_users, staff
 from django.http import JsonResponse
 import json
 import os
@@ -385,68 +385,7 @@ def employees(request):
             'users': None,
             'user_count': 0
         })
-        
-def role_matrix(request):
-    try:
-        applications_list = None
-        users = None
-        user_count = 0
-        sys_count = 0
-        subsidiaries = None
-        applications_list = list(applications.objects.values_list('application_name', flat=True))
-        sys_count = len(applications_list)
-        subsidiaries = list(
-            staff.objects.order_by('subsidiary').values_list('subsidiary', flat=True).distinct()
-        )
-        category = request.GET.get("category", "active")
-        print(f"📌 Category requested: {category}")
-
-        category_filter = {
-            "active": ["Active Assignment"],
-            "suspended": ["Suspend Assignment", "Suspend Paid Assignment"],
-            "ex_employees": ["Ex Employee"],
-            "contingent": ["Contingent"],
-            "service_accounts": ["Service Account"],
-        }.get(category, ["Active Assignment"])  # Default to Active Assignment
-
-        # Fetch users directly (no cache)
-        users = list(staff.objects.filter(employee_status__in=category_filter).values(
-            "pf_no", "full_name", "email", "supervisor", "supervisor_pf", "employee_category", 
-            "department", "subsidiary", "title", "branch", "actual_end_date"
-        ))
-
-        user_count = len(users)
-        print(f"✅ Users fetched: {user_count}")
-
-        # Pagination
-        paginator = Paginator(users, 20)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
-        return render(request, 'access_review/role_matrix.html', {
-            'applications': applications_list,
-            'users': page_obj,
-            'user_count': user_count,
-            'sys_count': sys_count,
-            'page_obj': page_obj,
-            'subsidiaries': subsidiaries
-        })
-
-    except ObjectDoesNotExist as e:
-        print(f"❌ ObjectDoesNotExist Error: {e}")
-        return render(request, 'access_review/role_matrix.html', {
-            'applications': None,
-            'users': None,
-            'user_count': 0,
-            'sys_count': 0
-        })
-    except Exception as e:
-        print(f"⚠️ Unexpected Error: {e}")
-        return render(request, 'access_review/role_matrix.html', {
-            'applications': None,
-            'users': None,
-            'user_count': 0
-        })
+    
 
 def insights(request):
     try:
