@@ -256,7 +256,8 @@
 
 
 
-
+<!-- DataTables JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 
 <!-- Include Google Charts loader -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -271,25 +272,46 @@
 <script src="{% static 'access_review/js/base.js' %}"></script>
 <script src="{% static 'access_review/js/tables.js' %}"></script>
 <script>
-    // Initialize DataTable
-    $('#userTable').DataTable({
-        paging: true,
-        searching: true,
-        ordering: true,
-        pageLength: 5,
-        lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
-        dom: "<'row'<'col-sm-6'l><'col-sm-6 d-flex justify-content-end'f>>" +
-             "<'row'<'col-sm-12'tr>>" +
-             "<'row'<'col-sm-6'i><'col-sm-6 d-flex justify-content-end'p>>",
-        scrollY: '300px',
-        scrollCollapse: true
+    $(document).ready(function () {
+        // Initialize DataTables for all tables
+        let tables = ['#headersTable', '#rolesTable', '#rolesMappingTable', '#userTable', '#maker_checkerTable'];
+        tables.forEach(function (tableId) {
+            $(tableId).DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                pageLength: 5,
+                lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+                dom: "<'row'<'col-sm-6'l><'col-sm-6 d-flex justify-content-end'f>>" +
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row'<'col-sm-6'i><'col-sm-6 d-flex justify-content-end'p>>",
+                scrollY: '300px',
+                scrollCollapse: true,
+                autoWidth: false,
+                responsive: true
+            });
+        });
+
+        // Automatically redraw tables when a tab is shown
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
+            tables.forEach(function (tableId) {
+                $(tableId).DataTable().columns.adjust().responsive.recalc();
+            });
+        });
+
+        // Optional: Per-column search (if you add input fields to the table headers)
+        $('table thead tr th input').on('keyup change', function () {
+            let table = $(this).closest('table').DataTable();
+            table.column($(this).parent().index()).search(this.value).draw();
+        });
     });
 
-    // Sidebar toggle functionality
-    document.getElementById('toggleSidebar').addEventListener('click', function () {
-     
+    // Sidebar toggle functionality (if needed)
+    document.getElementById('toggleSidebar')?.addEventListener('click', function () {
+        // Add your sidebar toggle logic here
     });
 </script>
+
 
 </body>
 </html>

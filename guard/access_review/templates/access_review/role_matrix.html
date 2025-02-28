@@ -19,36 +19,35 @@
                 <ul class="nav nav-pills justify-content-start mb-4">
                     <li class="nav-item">
                         <a class="nav-link {% if request.GET.category == 'headers' or not request.GET.category %}active{% endif %}" 
-                           href="#" data-category="headers">
+                           href="{% url 'role_matrix' %}?category=headers">
                             <i class="fas fa-list-alt"></i> Definition of Headers
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.GET.category == 'roles' %}active{% endif %}" 
-                           href="#" data-category="roles">
+                           href="{% url 'role_matrix' %}?category=roles">
                             <i class="fas fa-network-wired"></i> System Roles
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.GET.category == 'user_mappings' %}active{% endif %}" 
-                           href="#" data-category="user_mappings">
+                        <a class="nav-link {% if request.GET.category == 'roles_mapping' %}active{% endif %}" 
+                           href="{% url 'role_matrix' %}?category=roles_mapping">
                             <i class="fas fa-user-tag"></i> User Roles Mappings
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.GET.category == 'maker_checker' %}active{% endif %}" 
-                           href="#" data-category="maker_checker">
+                           href="{% url 'role_matrix' %}?category=maker_checker">
                             <i class="fas fa-user-check"></i> Maker Checkers
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.GET.category == 'sys_limits' %}active{% endif %}" 
-                           href="#" data-category="sys_limits">
+                           href="{% url 'role_matrix' %}?category=sys_limits">
                             <i class="fas fa-balance-scale"></i> System Limits
                         </a>
                     </li>
                 </ul>
-                
                 
             
    <hr>
@@ -152,10 +151,11 @@
     <!-- for headers -->
     <div class="table-container">
         <div class="container-fluid">
-            <div id="headers" class="tab-content">
+            <div id="headers" class="tab-content" {% if request.GET.category == 'headers' or not request.GET.category %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+
             <h2 class="text-center mb-4">Definition of Headers</h2>
             <div class="table-container">
-                <table id="userTable" class="table table-striped table-bordered">
+                <table id="headersTable" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>No.<div class="resizer"></th>
@@ -184,13 +184,15 @@
             </div> 
          </div>
  <!-- for role matrix -->
- <div id="roles" class="tab-content" style="display: none;">
+ <div id="roles" class="tab-content" {% if request.GET.category == 'roles' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+
 
     <div class="container-fluid">
        
         <h2 class="text-center mb-4">Systems Roles</h2>
         <div class="table-container">
-            <table id="userTable" class="table table-striped table-bordered">
+            <table id="rolesTable" class="table table-striped table-bordered">
+
                 <thead>
                     <tr>
                         <th>No.<div class="resizer"></div></th>
@@ -250,19 +252,23 @@
 </div>
 
  <!-- for user role matrix mapping-->
- <div id="user_mappings" class="tab-content" style="display: none;">
+
+    <div id="roles_mapping" class="tab-content" {% if request.GET.category == 'roles_mapping' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
 
     <div class="container-fluid">
     
         <h2 class="text-center mb-4">Users Roles Mapping</h2>
         <div class="table-container">
-            <table id="userTable" class="table table-striped table-bordered">
+            <table id="rolesMappingTable" class="table table-striped table-bordered">
+
                 <thead>
                     <tr>
                         <th>No.<div class="resizer"></div></th>
+                        <th>Application<div class="resizer"></div></th>
                         <th>PF NO<div class="resizer"></div></th>
                         <th>Email<div class="resizer"></div></th>
                         <th>Employee Title<div class="resizer"></div></th>
+                        <th>Employee Department<div class="resizer"></div></th>
                         <th>HR Terms<div class="resizer"></div></th>
                         <th>Role ID<div class="resizer"></div></th>
                         <th>System Role<div class="resizer"></div></th>
@@ -279,9 +285,11 @@
                     {% for mapping in roles_mapping %}
                         <tr>   
                             <td>{{ forloop.counter }}</td>
+                            <td>{{ mapping.application }}</td>  
                             <td>{{ mapping.pf_no }}</td>  
                             <td>{{ mapping.email }}</td>
-                            <td>{{ mapping.job_title }}</td>
+                            <td>{{ mapping.title }}</td>
+                            <td>{{ mapping.department }}</td>
                             <td>{{ mapping.hr_terms }}</td>
                             <td>{{ mapping.role_id }}</td>
                             <td>{{ mapping.role_name }}</td>
@@ -295,7 +303,7 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="19" class="text-center">No Users Roles Mapping available</td>
+                            <td colspan="20" class="text-center">No Users Roles Mapping available</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -305,23 +313,43 @@
     </div>
 </div>
 <!-- Maker Checker -->
-<div id="maker_checker" class="tab-content" style="display: none;">
-
+<div id="maker_checker" class="tab-content" {% if request.GET.category == 'maker_checker' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
     <div class="container-fluid">
-
         <h2 class="text-center mb-4">System Maker Checker</h2>
-        {% for maker_c in maker_checker %}
-            <div>{{ maker_c.maker_checker | safe }}</div>
-        {% empty %}
-            <div class="text-center">No Maker Checker Available</div>
-        {% endfor %}
+        <div class="table-container">
+            <table id="maker_checkerTable" class="table table-striped table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>No.<div class="resizer"></div></th>
+                        <th>Application<div class="resizer"></div></th>
+                        <th>Status<div class="resizer"></div></th>
+                        
+                    </tr>
+                </thead>
+                <tbody class="scrollable-tbody">
+                    {% for item in maker_checker %}
+                        <tr>   
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ item.application }}</td>
+
+                            <td>{{ item.status }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="20" class="text-center">No maker/checker findings to display</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div> 
   
-</div>
+    </div>
 </div>
 
 <!-- System Limits -->
-<div id="sys_limits" class="tab-content" style="display: none;">
 
+    <div id="sys_limits" class="tab-content" {% if request.GET.category == 'sys_limits' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
     <div class="container-fluid">
    
         <h2 class="text-center mb-4">System Limits</h2>
@@ -340,14 +368,16 @@
                     <ul class="pagination">
                         {% if page_obj.has_previous %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <a class="page-link" href="?category={{ request.GET.category }}&page={{ page_obj.previous_page_number }}" aria-label="Previous">
                                     <span aria-hidden="true">&laquo; Previous</span>
                                 </a>
                             </li>
                         {% endif %}
             
                         {% if page_obj.number > 3 %}
-                            <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="?category={{ request.GET.category }}&page=1">1</a>
+                            </li>
                             {% if page_obj.number > 4 %}
                                 <li class="page-item disabled"><span class="page-link">...</span></li>
                             {% endif %}
@@ -356,7 +386,7 @@
                         {% for num in page_obj.paginator.page_range %}
                             {% if num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
                                 <li class="page-item {% if num == page_obj.number %}active{% endif %}">
-                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    <a class="page-link" href="?category={{ request.GET.category }}&page={{ num }}">{{ num }}</a>
                                 </li>
                             {% endif %}
                         {% endfor %}
@@ -365,12 +395,14 @@
                             {% if page_obj.number < page_obj.paginator.num_pages|add:-3 %}
                                 <li class="page-item disabled"><span class="page-link">...</span></li>
                             {% endif %}
-                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="?category={{ request.GET.category }}&page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+                            </li>
                         {% endif %}
             
                         {% if page_obj.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <a class="page-link" href="?category={{ request.GET.category }}&page={{ page_obj.next_page_number }}" aria-label="Next">
                                     <span aria-hidden="true">Next &raquo;</span>
                                 </a>
                             </li>
@@ -379,14 +411,18 @@
                 </nav>
             </div>
             
+            
         </div>
     </div>
 
-
+</div>
+</div>
     <!-- Footer -->
     <footer class="text-center mt-5 py-4 bg-light">
         <p>&copy; <span id="currentYear"></span> Users Access Review. All Rights Reserved.</p>
     </footer>
+
+    
 
     <!-- JavaScript -->
     <script src="{% static 'access_review/js/role_matrix.js' %}"></script> 
