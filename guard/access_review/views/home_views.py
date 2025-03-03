@@ -2,7 +2,7 @@ from django.shortcuts import render
 import pandas as pd
 from ldap3 import Server, Connection, ALL, SUBTREE
 from datetime import datetime
-from .models import login_credentials, ad, applications, column_mapping, system_users, staff
+from ..models import login_credentials, ad, applications, column_mapping, system_users, staff
 from django.http import JsonResponse
 import json
 import os
@@ -183,6 +183,50 @@ def home(request):
             'user_count': 0
         })
 
+
+
+def line_manager(request):
+    try:
+        applications_list = list(applications.objects.values_list('application_name', flat=True))
+        sys_count = len(applications_list)
+
+        subsidiaries = list(staff.objects.order_by('subsidiary').values_list('subsidiary', flat=True).distinct())
+
+   
+        users = list(staff.objects.all().values())
+
+        user_count = len(users)
+
+        paginator = Paginator(users, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'access_review/line_manager.html', {
+            'applications': applications_list,
+            'users': page_obj,
+            'user_count': user_count,
+            'sys_count': sys_count,
+            'page_obj': page_obj,
+            'subsidiaries': subsidiaries
+        })
+
+    except ObjectDoesNotExist as e:
+        print(f"An error occurred: {e}")
+        return render(request, 'access_review/line_manager.html', {
+            'applications': None,
+            'users': None,
+            'user_count': 0,
+            'sys_count': 0
+        })
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return render(request, 'access_review/line_manager.html', {
+            'applications': None,
+            'users': None,
+            'user_count': 0
+        })
+
+
 def finacle(request):
     try:
    
@@ -341,6 +385,7 @@ def employees(request):
             'users': None,
             'user_count': 0
         })
+    
 
 def insights(request):
     try:
@@ -553,4 +598,17 @@ def filter_users(request):
         "users": users_data,
         "user_count": user_count,
     })
-    
+
+
+def user_review(request, user_id):
+    user = staff.objects.get(id=user_id)
+    data = {
+        'branch': user.branch,
+        'department': user.department,
+        'supervisor': user.supervisor,
+        'email': user.email,
+        'full_name': user.full_name,
+        'pf_no': user.pf_no,
+        # Add any other relevant fields
+    }
+    return JsonResponse(data)

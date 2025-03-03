@@ -26,6 +26,27 @@ class staff(models.Model):
         return f"PF No: {self.pf_no}, Email: {self.email}, SAM Name: {self.sam_name}"
 
 
+class line_manager(models.Model):
+    pf_no = models.CharField(max_length=50, null=True, blank=True)
+    sam_name = models.CharField(max_length=100, null=True, blank=True)
+    full_name = models.CharField(max_length=200, null=True, blank=True)
+    email = models.EmailField(max_length=200, null=True, blank=True)
+    employee_status = models.CharField(max_length=100, null=True, blank=True)
+    subsidiary = models.CharField(max_length=200, null=True, blank=True)
+    department = models.CharField(max_length=200, null=True, blank=True)
+    title = models.CharField(max_length=100, null=True, blank=True)
+    branch = models.CharField(max_length=100, null=True, blank=True)
+    actual_end_date = models.CharField(max_length=100, null=True, blank=True)
+  
+
+    class Meta:
+        db_table = 'line_manager'
+        verbose_name = 'line_manager'
+        verbose_name_plural = 'line_manager'
+
+    def __str__(self):
+        return f"PF No: {self.pf_no}, Email: {self.email}, SAM Name: {self.sam_name}, Location : {self.branch}"
+
 class ad(models.Model):
     full_name = models.CharField(max_length=200, null=True, blank=True)
     sam_name = models.CharField(max_length=100, null=True, blank=True)
@@ -101,7 +122,8 @@ class applications(models.Model):
     application_name = models.CharField(max_length=200, null=True, blank=True)
     application_type = models.CharField(max_length=20, choices=APPLICATION_TYPES, null=True, blank=True)
     app_description = models.TextField(null=True, blank=True)
-    app_support_admin = models.CharField(max_length=200, null=True, blank=True)
+    app_support_admin_email = models.CharField(max_length=200, null=True, blank=True)
+    tier =models.CharField(max_length=200, null=True, blank=True)
     department = models.CharField(max_length=200, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_review = models.DateTimeField(null=True, blank=True)
@@ -113,7 +135,7 @@ class applications(models.Model):
         verbose_name_plural = 'applications'
 
     def __str__(self):
-        return f"App Name: {self.application_name}, Admin: {self.app_support_admin}, Source: {self.data_source}"
+        return f"App Name: {self.application_name}, Admin: {self.app_support_admin_email}, Source: {self.data_source}"
 class login_credentials(models.Model):
     application = models.ForeignKey(applications, on_delete=models.CASCADE, null=True, blank=True)
     username = models.CharField(max_length=200, null=True, blank=True)
@@ -142,3 +164,45 @@ class column_mapping(models.Model):
 
     def __str__(self):
         return f"{self.model_field} -> {self.excel_header}"
+class definition_of_headers(models.Model):
+    header = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    example = models.TextField( null=True, blank=True)
+   
+
+    class Meta:
+        db_table = 'definition_of_headers'
+        verbose_name = 'definition_of_headers'
+        verbose_name_plural = 'definition_of_headers'
+
+    def __str__(self):
+        return f"header: {self.header}, description: {self.description},  example: {self.example}"
+    
+class role_matrix(models.Model):
+    role_id = models.TextField(null=True, blank=True)
+    application = models.CharField(max_length=255, null=True, blank=True)
+    role_name = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    owners = models.TextField(null=True, blank=True)
+    access_level = models.TextField(null=True, blank=True)
+    modules = models.TextField(null=True, blank=True)
+    menu = models.TextField(null=True, blank=True)
+    transaction_type = models.TextField(null=True, blank=True)
+    sod = models.TextField(null=True, blank=True)
+    responsibilities = models.TextField(null=True, blank=True)
+    account_expiration_date = models.TextField(null=True, blank=True)
+    permissions = models.TextField(null=True, blank=True)
+    frequency = models.TextField(null=True, blank=True)
+    approval = models.TextField(null=True, blank=True)
+    hr_terms = models.TextField(null=True, blank=True)
+    reporting_structure = models.TextField(null=True, blank=True)
+    audit_trail = models.TextField(null=True, blank=True)
+    time_based = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "role_matrix"
+        verbose_name = "Role Matrix"
+        verbose_name_plural = "Role Matrices"
+
+    def __str__(self):
+        return f"Application Name: {self.application}, Role ID: {self.role_id}, Role Name: {self.role_name}, Owners: {self.owners}"

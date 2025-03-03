@@ -134,3 +134,10 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "access_review/static")]
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtphost.ebsafrica.com'  
+EMAIL_PORT = 25
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'eugine.wanyama@equitybank.co.ke'
+EMAIL_HOST_PASSWORD = '2014Luck001#1*' 

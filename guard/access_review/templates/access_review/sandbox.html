@@ -3,277 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resizable Table</title>
+    <title>User Access Review - Send Email</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        
-        .table-container {
-            margin-top: 20px;
-            padding: 20px;
-            border: 2px solid #7B0605;
-            border-radius: 8px;
-            background-color: #fff;
-            color: black;
-            overflow: auto;
-            width: 100%;
-            max-width: 100vw;
-            position: relative;
-          }
-          
-          .table {
-            width: auto;
-            min-width: 90%;
-            border: 1px solid #7B0605;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #4A90E2, #50E3C2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            table-layout: auto;
-            border-collapse: collapse;
-          }
-          
-          .table thead th, .table tbody td {
-            padding: 10px;
-            border: 1px solid #7B0605;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 300px;
-            font-size: 1rem;
-          }
-          
-          .table th, .table td {
-            width: auto;
-            text-align: center;
-          }
-          
-          .table thead th {
-            background-color: #7B0605;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            font-weight: 600;
+            color: #4A90E2;
+        }
+
+        #sendEmailBtn {
+            background: #4A90E2;
             color: white;
-            font-weight: bold;
-            text-align: center;
-            vertical-align: middle;
-          }
-          
-          .table td span {
-            display: inline-block;
-            max-width: 300px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-          
-          .table tbody tr:nth-child(odd) {
-            background-color: #f9f9f9;
-          }
-          
-          .table tbody tr:nth-child(even) {
-            background-color: #fff;
-          }
-          
-          .table tbody tr:hover {
-            background-color: #dcdcdc;
-          }
-          
-          .select2-container .select2-selection--single {
-            height: 39px;
-            padding: 5px 10px;
-            border: 2px solid #7B0605;
-            border-radius: 5px;
-          }
-          
-          .select2-container .select2-results__option {
-            padding: 10px;
-            font-size: 1.1rem;
-            color: #333;
-          }
-          
-          .select2-container--default .select2-selection--single .select2-selection__rendered {
-            font-size: 1.25rem;
-            color: #7B0605;
-          }
-          
-          .select2-container .select2-results__option:hover {
-            background-color: #7B0605;
-            color: white;
-          }
-          
-          .select2-container {
-            width: 100%;
-          }
-          
-          .select2-container--default .select2-selection--single .select2-selection__placeholder {
-            color: #6c757d;
-            font-style: italic;
-          }
-          
-          .card {
-            background-color: #7B0605;
-            color: white;
-          }
-          
-          .dataTables_scrollBody {
-            max-height: 400px;
-            overflow-y: auto;
-            width: 100%;
-          }
-          
-          .dataTables_scrollHead {
-            z-index: 2;
-          }
-          
-          footer {
-            text-align: center;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f8f9fa;
-          }
-          
-          .nav-pills .nav-link {
-            padding: 10px 15px;
-            font-size: 1rem;
-          }
-          
-          .nav-pills .nav-link.active {
-            background-color: #7B0605;
-            color: white;
-          }
-          
-          .breadcrumb button {
-            font-size: 1rem;
+            padding: 10px 20px;
             border: none;
-            background: none;
-            cursor: pointer;
-          }
-          
-          .bread-container {
-            margin: 1px;
-            padding: 20px;
-            border: 2px solid #7B0605;
-            border-radius: 8px;
-            background-color: #fff;
-            color: black;
-            overflow: auto;
-            width: 100%;
-            max-width: 100vw;
-          }
-          
-          .table th {
-            position: relative;
-            user-select: none;
-            border-right: 1px solid #fff;
-          }
-          
-          .table th:last-child {
-            border-right: none;
-          }
-          
-          .table-container {
-            margin: 20px;
-            padding: 20px;
-            border: 2px solid #7B0605;
-            border-radius: 8px;
-            background-color: #fff;
-            overflow: auto;
-            width: 100%;
-            max-width: 100vw;
-            position: relative;
-          }
-          
-          table {
-            width: 100%;
-            border-collapse: collapse;
-          }
-          
-          th, td {
-            border: 1px solid #7B0605;
-            padding: 10px;
-            text-align: center;
-            position: relative;
-          }
-          
-          th {
-            background-color: #7B0605;
-            color: white;
-            font-weight: bold;
-            position: relative;
-            user-select: none;
-          }
-          
-          .resizer {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 5px;
-            height: 100%;
-            cursor: col-resize;
-            background-color: transparent;
-          }
-          
-          .resizer:hover,
-          .resizing {
-            background-color: #7B0605;
-          }
-          
+            border-radius: 10px;
+            transition: 0.3s;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        #sendEmailBtn:hover {
+            background: #50E3C2;
+            transform: scale(1.1);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0px);
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="table-container">
-        <table id="userTable">
-            <thead>
-                <tr>
-                    <th>No.<div class="resizer"></div></th>
-                    <th>Application<div class="resizer"></div></th>
-                    <th>PF No<div class="resizer"></div></th>
-                    <th>User ID<div class="resizer"></div></th>
-                    <th>Sam Name<div class="resizer"></div></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>App1</td>
-                    <td>12345</td>
-                    <td>user123</td>
-                    <td>Sam</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>App2</td>
-                    <td>67890</td>
-                    <td>user456</td>
-                    <td>Alex</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const headers = document.querySelectorAll("th");
+
+<div class="container">
+    <h1>User Access Review</h1>
+    <p class="lead">Click the button below to send email notifications to supervisors.</p>
+    <button id="sendEmailBtn">📧 Send Email</button>
+    <div id="feedback"></div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#sendEmailBtn').click(function () {
+            $('#feedback').html('<div class="text-info">⏳ Sending emails, please wait...</div>');
             
-            headers.forEach((th) => {
-                const resizer = th.querySelector(".resizer");
-                if (resizer) {
-                    resizer.addEventListener("mousedown", initResize);
+            $.ajax({
+                url: "{% url 'share_supervisor_data' %}",
+                type: "POST",
+                headers: { "X-CSRFToken": "{{ csrf_token }}" },
+                data: JSON.stringify({}),
+                contentType: "application/json",
+                success: function (response) {
+                    if (response.status === 'success') {
+                        $('#feedback').html('<div class="text-success">✅ ' + response.message + '</div>');
+                    } else {
+                        $('#feedback').html('<div class="text-danger">❌ ' + response.message + '</div>');
+                    }
+                },
+                error: function (xhr) {
+                    $('#feedback').html('<div class="text-danger">❌ Failed: ' + xhr.responseJSON.message + '</div>');
                 }
             });
-            
-            function initResize(event) {
-                const th = event.target.parentElement;
-                const startX = event.clientX;
-                const startWidth = th.offsetWidth;
-                
-                document.addEventListener("mousemove", resizeColumn);
-                document.addEventListener("mouseup", stopResize);
-                
-                function resizeColumn(event) {
-                    const newWidth = startWidth + (event.clientX - startX);
-                    th.style.width = `${newWidth}px`;
-                }
-                
-                function stopResize() {
-                    document.removeEventListener("mousemove", resizeColumn);
-                    document.removeEventListener("mouseup", stopResize);
-                }
-            }
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>
