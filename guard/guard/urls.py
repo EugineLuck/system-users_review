@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from access_review.views import home_views,roles_views
+from access_review.views import home_views,roles_views,send_email_views,sandbox_view,supervisor_views
 admin.site.site_header='USERS ACCESS REVIEW ADMIN DASHBOARD'
 admin.site.site_title='Users Review'
 admin.site.index_title='DATA CENTRE'
@@ -40,7 +40,11 @@ urlpatterns = [
     path('get_model_fields/', home_views.get_model_fields, name='get_model_fields'),
     path('jdbc_connections/', home_views.jdbc_connections, name='jdbc_connections'),
     path('filter-users/', home_views.filter_users, name='filter_users'),
-    
+    path('send_email/', send_email_views.send_email, name='send_email'),
+    path('share_supervisor_data/', sandbox_view.share_supervisor_data, name='share_supervisor_data'),
+    path('update_supervisor/', supervisor_views.supervisor_query, name='update_supervisor'),
+    path('supervisor_t/', supervisor_views.supervisor_t, name='supervisor_t'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

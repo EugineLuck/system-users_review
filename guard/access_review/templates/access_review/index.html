@@ -86,6 +86,13 @@
                     <span class="ms-1 sidebar-text"> Employees</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-white d-flex align-items-center" href="{% url 'supervisor_t' %}">
+                    <i class="fas fa-user-tie"></i>
+                    <span class="ms-1 sidebar-text">Supervisor</span>
+                </a>
+        
+            </li>
             <!--
             <li class="nav-item">
                 <a class="nav-link text-white ms-8" href="#">
@@ -281,7 +288,7 @@
                 searching: true,
                 ordering: true,
                 pageLength: 5,
-                lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+                lengthMenu: [[100, 2000], [100,  2000]],
                 dom: "<'row'<'col-sm-6'l><'col-sm-6 d-flex justify-content-end'f>>" +
                      "<'row'<'col-sm-12'tr>>" +
                      "<'row'<'col-sm-6'i><'col-sm-6 d-flex justify-content-end'p>>",

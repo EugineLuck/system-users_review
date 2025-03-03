@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const rolesTabsContainer = document.querySelector("#rolesTabsContainer");
+    const filtersContainer = document.querySelector(".row.mt-2.mb-2.justify-content-between");
     const pageTitle = document.querySelector("h2.text-center.mb-4");
     const loadingSpinner = document.getElementById("loadingSpinner");
 
@@ -23,141 +24,101 @@ document.addEventListener("DOMContentLoaded", function () {
     function updatePageTitle(category) {
         const newTitle = categoryNames[category] || categoryNames.default;
         if (pageTitle) pageTitle.innerText = newTitle;
-        
         const noUsersRow = document.querySelector("td[colspan='8']");
         if (noUsersRow) noUsersRow.innerText = `NO ${newTitle} AVAILABLE`;
     }
 
     function fetchData(url, category = "headers") {
         showSpinner();
-        console.log(`Fetching data for category: ${category}, URL: ${url}`);
-    
+        console.log(`Fetching data for: ${category}`);
+
         fetch(url)
             .then(response => response.text())
             .then(html => {
                 const parser = new DOMParser();
                 const newDocument = parser.parseFromString(html, "text/html");
-                
-                let activeTab = document.getElementById(category);
-    
+                const activeTab = document.getElementById(category);
+
                 if (!activeTab) {
-                    console.warn(`No active tab found for category: ${category}`);
+                    console.warn(`No section found for category: ${category}`);
                     hideSpinner();
                     return;
                 }
-    
-                // Select the correct table body in the fetched document
+
                 const newTableBody = newDocument.querySelector(`#${category} .scrollable-tbody`);
                 const currentTableBody = activeTab.querySelector(".scrollable-tbody");
-    
                 if (newTableBody && currentTableBody) {
-                    console.log(`Updating table body for category: ${category}`);
                     currentTableBody.innerHTML = newTableBody.innerHTML;
-                } else {
-                    console.warn(`No table body found for category: ${category}`);
-                    currentTableBody.innerHTML = "<tr><td colspan='8'>No data available</td></tr>";
                 }
-    
-                // Select the correct pagination section in the fetched document
+
                 const newPagination = newDocument.querySelector(`#${category} .pagination`);
                 const currentPagination = activeTab.querySelector(".pagination");
-    
                 if (newPagination && currentPagination) {
                     currentPagination.innerHTML = newPagination.innerHTML;
+                    initializePaginationLinks();
                 }
-    
-                // Hide all other tab contents and show the active one
-                document.querySelectorAll(".tab-content").forEach(section => {
-                    section.style.display = "none";
-                });
-    
-                activeTab.style.display = "block";
-    
+
                 updatePageTitle(category);
                 hideSpinner();
             })
             .catch(error => {
-                console.error("Error fetching data:", error);
+                console.error("Fetch error:", error);
                 hideSpinner();
             });
     }
-    
 
     function handleTabClick(event) {
         event.preventDefault();
         const target = event.target.closest(".nav-link");
         if (!target) return;
 
-        const url = new URL(target.href, window.location.origin);
-        const category = url.searchParams.get("category");
+        const categoryUrl = target.getAttribute("href");
+        const category = new URL(categoryUrl, window.location.origin).searchParams.get("category") || "headers";
 
         rolesTabsContainer.querySelectorAll(".nav-link").forEach(tab => tab.classList.remove("active"));
         target.classList.add("active");
 
-        fetchData(target.href, category);
+        document.querySelectorAll(".tab-content").forEach(tab => tab.style.display = "none");
+        document.getElementById(category).style.display = "block";
+
+        fetchData(categoryUrl, category);
     }
 
     function handlePaginationClick(event) {
         event.preventDefault();
+        const link = event.target.closest(".page-link");
+        if (!link) return;
+
         const activeTab = document.querySelector(".nav-link.active");
         if (!activeTab) return;
 
-        const url = new URL(activeTab.href, window.location.origin);
-        const category = url.searchParams.get("category");
-
-        fetchData(event.target.getAttribute("href"), category);
+        const category = activeTab.getAttribute("data-category");
+        fetchData(link.href, category);
     }
 
-    function initializeTabsAndPagination() {
-        if (rolesTabsContainer) {
-            rolesTabsContainer.addEventListener("click", handleTabClick);
-        }
-        document.body.addEventListener("click", function (event) {
-            if (event.target.matches(".page-link")) {
-                handlePaginationClick(event);
-            }
+    function initializePaginationLinks() {
+        document.querySelectorAll(".page-link").forEach(link => {
+            link.addEventListener("click", handlePaginationClick);
         });
+    }
+
+    function initializeTabs() {
+        rolesTabsContainer.addEventListener("click", handleTabClick);
     }
 
     function init() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const initialCategory = urlParams.get("category") || "headers";
+        const initialCategory = new URLSearchParams(window.location.search).get("category") || "headers";
+        const initialTab = document.querySelector(`.nav-link[data-category="${initialCategory}"]`);
 
-        const activeTab = document.querySelector(`.nav-link[href*="category=${initialCategory}"]`);
-        if (activeTab) {
-            activeTab.classList.add("active");
+        if (initialTab) {
+            initialTab.classList.add("active");
+            document.getElementById(initialCategory).style.display = "block";
+            fetchData(initialTab.href, initialCategory);
         }
 
-        document.querySelectorAll(".tab-content").forEach(section => {
-            section.style.display = "none";
-        });
-        const activeSection = document.getElementById(initialCategory);
-        if (activeSection) {
-            activeSection.style.display = "block";
-        }
-
-        const initialUrl = `${window.location.pathname}${window.location.search || `?category=${initialCategory}`}`;
-        console.log(`Initial fetch URL: ${initialUrl}`);
-        fetchData(initialUrl, initialCategory);
-
-        initializeTabsAndPagination();
+        initializeTabs();
+        initializePaginationLinks();
     }
 
     init();
-
-    document.querySelectorAll(".nav-link").forEach(link => {
-        link.addEventListener("click", function (event) {
-            event.preventDefault();
-            const newCategory = this.getAttribute("href").split("category=")[1];
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set("category", newCategory);
-            window.history.pushState({}, "", "?" + urlParams.toString());
-
-            document.querySelectorAll(".tab-content").forEach(div => div.style.display = "none");
-            const activeTab = document.getElementById(newCategory);
-            if (activeTab) {
-                activeTab.style.display = "block";
-            }
-        });
-    });
 });

@@ -1,26 +1,22 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const paginationLinks = document.querySelectorAll('.page-link');
-
-    // Show the loading spinner
+    // Show Spinner
     function showSpinner() {
         document.getElementById('loadingSpinner').style.display = 'block';
     }
 
-    // Hide the loading spinner
+    // Hide Spinner
     function hideSpinner() {
         document.getElementById('loadingSpinner').style.display = 'none';
     }
 
+    // Attach Pagination Events
     function attachPaginationEvents() {
         document.querySelectorAll('.page-link').forEach(link => {
             link.addEventListener('click', function (e) {
                 e.preventDefault();
                 const url = this.getAttribute('href');
-
-                // Show loading spinner
                 showSpinner();
 
-                // Fetch the new page content
                 fetch(url)
                     .then(response => response.text())
                     .then(html => {
@@ -29,15 +25,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         const newTableBody = newDocument.querySelector('.scrollable-tbody');
                         const newPagination = newDocument.querySelector('.pagination');
 
-                        // Update the table and pagination
-                        document.querySelector('.scrollable-tbody').innerHTML = newTableBody.innerHTML;
-                        document.querySelector('.pagination').innerHTML = newPagination.innerHTML;
-
-                        // Hide loading spinner
+                        if (newTableBody && newPagination) {
+                            document.querySelector('.scrollable-tbody').innerHTML = newTableBody.innerHTML;
+                            document.querySelector('.pagination').innerHTML = newPagination.innerHTML;
+                        } else {
+                            console.error('Error: New table body or pagination not found in response.');
+                        }
                         hideSpinner();
-
-                        // Reattach event listeners to new pagination links
-                        attachPaginationEvents();
+                        attachPaginationEvents(); // Reattach events after updating the DOM
                     })
                     .catch(error => {
                         console.error('Error loading page:', error);
@@ -47,75 +42,118 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initial call to attach events
+    // Initial Call to Attach Pagination Events
     attachPaginationEvents();
-});
 
-// jQuery functions
-$(document).ready(function() {
-    // When the review button is clicked
-    $('.open-review-modal').on('click', function() {
-        var userId = $(this).data('user-id');
+    // Review Modal Button Click
+    document.querySelectorAll('.open-review-modal').forEach(button => {
+        button.addEventListener('click', function () {
+            const userId = this.dataset.userId;
+            showSpinner();
 
-        // Show loading spinner
-        $('#loadingSpinner').show();
-
-        // Send an AJAX request to get user data
-        $.ajax({
-            url: '/user_review/' + userId,
-            method: 'GET',
-            success: function(data) {
-                // Update the modal content with the data
-                $('#modalContent').html(`
-                    <p><strong>Branch:</strong> ${data.branch}</p>
-                    <p><strong>Department:</strong> ${data.department}</p>
-                    <p><strong>Supervisor:</strong> ${data.supervisor}</p>
-                    <p><strong>Email:</strong> ${data.email}</p>
-                    <p><strong>Full Name:</strong> ${data.full_name}</p>
-                    <!-- Add more details as necessary -->
-                `);
-
-                // Hide loading spinner
-                $('#loadingSpinner').hide();
-            },
-            error: function() {
-                alert('Error loading user data.');
-                $('#loadingSpinner').hide();
-            }
+            fetch(`/user_review/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('modalContent').innerHTML = `
+                        <p><strong>Branch:</strong> ${data.branch}</p>
+                        <p><strong>Department:</strong> ${data.department}</p>
+                        <p><strong>Supervisor:</strong> ${data.supervisor}</p>
+                        <p><strong>Email:</strong> ${data.email}</p>
+                        <p><strong>Full Name:</strong> ${data.full_name}</p>
+                    `;
+                    hideSpinner();
+                })
+                .catch(error => {
+                    console.error('Error loading user data:', error);
+                    alert('Error loading user data.');
+                    hideSpinner();
+                });
         });
     });
 
-    // Initialize Select2
-    $('#applicationSelect').select2({
-        placeholder: 'Search and select an Application',
-        allowClear: true
-    });
+    // Email Button Click
+    const sendEmailsBtn = document.getElementById('sendEmailsBtn');
+    if (sendEmailsBtn) {
+        sendEmailsBtn.addEventListener('click', async function () {
+            const url = sendEmailsBtn.dataset.url;
+            const csrfToken = sendEmailsBtn.dataset.csrf;
 
-    // Initialize DataTable with features like search, pagination, etc.
-    $('#systemUsersTable').DataTable({
-        paging: true,       // Enable pagination
-        searching: true,    // Enable search box
-        ordering: true,     // Enable column sorting
-        pageLength: 5,      // Set page length
-        scrollY: '400px',   // Enable vertical scroll
-        scrollCollapse: true,
-        fixedHeader: true   // Keep the header fixed while scrolling
-    });
+            if (confirm("Are you sure you want to send emails to Supervisors?")) {
+                showSpinner();
+                sendEmailsBtn.textContent = "Sending Emails...";
+                sendEmailsBtn.disabled = true;
 
-    // Set the current year in footer
-    $('#currentYear').text(new Date().getFullYear());
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-CSRFToken': csrfToken,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const data = await response.json();
+                    alert(data.message);
+                } catch (error) {
+                    console.error('Failed to send emails:', error);
+                    alert("Failed to send emails");
+                } finally {
+                    sendEmailsBtn.textContent = "Send Emails to Supervisors";
+                    sendEmailsBtn.disabled = false;
+                    hideSpinner();
+                }
+            }
+        });
+    }
 
-    // Update user count dynamically
+    // DataTable Initialization
+    if ($.fn.DataTable) {
+        $('#systemUsersTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            pageLength: 5,
+            scrollY: '400px',
+            scrollCollapse: true,
+            fixedHeader: true
+        });
+    }
+
+    // Select2 Initialization
+    if ($.fn.select2) {
+        $('#applicationSelect').select2({
+            placeholder: 'Search and select an Application',
+            allowClear: true
+        });
+    }
+
+    // Update User Count
     function updateUserCount() {
-        var rowCount = $('#systemUsersTable tbody tr').length;
+        const rowCount = $('#systemUsersTable tbody tr').length;
         $('#userCount').text(rowCount);
     }
 
-    // Update user count on table redraw
-    $('#systemUsersTable').on('draw.dt', function() {
-        updateUserCount();
-    });
-
-    // Initial user count
+    if ($.fn.DataTable) {
+        $('#systemUsersTable').on('draw.dt', updateUserCount);
+    }
     updateUserCount();
+// Toastr Auto Notification Handler
+function showToastrAlerts(selector) {
+    document.querySelectorAll(selector + ' .alert').forEach(alert => {
+        const message = alert.textContent.trim();
+        if (alert.classList.contains('status-success')) {
+            toastr.success(message, '', { timeOut: 5000, closeButton: true, progressBar: true });
+        } else if (alert.classList.contains('status-error') || alert.classList.contains('status-red')) {
+            toastr.error(message, '', { timeOut: 5000, closeButton: true, progressBar: true });
+        } else if (alert.classList.contains('status-warning')) {
+            toastr.warning(message, '', { timeOut: 5000, closeButton: true, progressBar: true });
+        }
+    });
+}
+
+// Automatically Trigger Notifications
+showToastrAlerts('#djangoMessages');
+showToastrAlerts('#errorMessages');
+
+    // Set Year Footer
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
 });

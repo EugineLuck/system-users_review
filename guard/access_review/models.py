@@ -26,6 +26,27 @@ class staff(models.Model):
         return f"PF No: {self.pf_no}, Email: {self.email}, SAM Name: {self.sam_name}"
 
 
+class line_manager(models.Model):
+    pf_no = models.CharField(max_length=50, null=True, blank=True)
+    sam_name = models.CharField(max_length=100, null=True, blank=True)
+    full_name = models.CharField(max_length=200, null=True, blank=True)
+    email = models.EmailField(max_length=200, null=True, blank=True)
+    employee_status = models.CharField(max_length=100, null=True, blank=True)
+    subsidiary = models.CharField(max_length=200, null=True, blank=True)
+    department = models.CharField(max_length=200, null=True, blank=True)
+    title = models.CharField(max_length=100, null=True, blank=True)
+    branch = models.CharField(max_length=100, null=True, blank=True)
+    actual_end_date = models.CharField(max_length=100, null=True, blank=True)
+  
+
+    class Meta:
+        db_table = 'line_manager'
+        verbose_name = 'line_manager'
+        verbose_name_plural = 'line_manager'
+
+    def __str__(self):
+        return f"PF No: {self.pf_no}, Email: {self.email}, SAM Name: {self.sam_name}, Location : {self.branch}"
+
 class ad(models.Model):
     full_name = models.CharField(max_length=200, null=True, blank=True)
     sam_name = models.CharField(max_length=100, null=True, blank=True)

@@ -1,9 +1,13 @@
 from django.contrib import admin
-from .models import staff, ad, system_users, applications, login_credentials,column_mapping,definition_of_headers,role_matrix
+from .models import staff, ad, system_users, applications, login_credentials,column_mapping,definition_of_headers,role_matrix,line_manager
 @admin.register(staff)
 class StaffAdmin(admin.ModelAdmin):
     list_display = ('pf_no', 'sam_name', 'full_name', 'email', 'supervisor', 'application')
     search_fields = ('pf_no', 'sam_name', 'email', 'full_name')
+@admin.register(line_manager)
+class ManagerAdmin(admin.ModelAdmin):
+    list_display = ('pf_no', 'sam_name', 'full_name', 'email', 'branch')
+    search_fields = ('pf_no', 'sam_name', 'email', 'full_name','branch')
 @admin.register(ad)
 class AdAdmin(admin.ModelAdmin):
     list_display = ('pf_no', 'email', 'sam_name', 'system_status', 'last_login')
